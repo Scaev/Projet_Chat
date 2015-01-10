@@ -19,7 +19,7 @@ def connexion(request):
             
             for utilisateur in Utilisateur.objects.all():
                 if user.pseudo==utilisateur.pseudo:
-                    if user.pseudo== utilisateur.mot_de_passe:
+                    if user.mot_de_passe== utilisateur.mot_de_passe:
                         return redirect(accueil)
                     else:
                         return HttpResponse('Le pseudo est bon mais pas le mot de passe, essaie encore! :)')
