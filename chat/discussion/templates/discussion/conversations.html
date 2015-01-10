@@ -1,0 +1,13 @@
+<h1> Discussions en cours </h1>
+{% for conversation in conversations%}
+	<div class="conversation">
+                <h2> Amis qui participent à cette discussion </h2>
+		{% for participant in conversation.participants.all %}
+                	{% if participant!=utilisateur %}
+				<p> {{participant.pseudo}} </p>
+			{% endif %}
+                {% endfor %}
+	</div>
+{% empty %}
+	<p> Vous n'êtes dans aucune conversation! </p>
+{% endfor %}
