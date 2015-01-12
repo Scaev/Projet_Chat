@@ -90,3 +90,27 @@ def inscription(request):
         form = UserForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/inscription.html', locals())
 
+def discussion(request,id_discussion):
+  #  conversation_courante = Conversation()
+   # conversation_courante.save()
+    if request.method == 'POST':  # S'il s'agit d'une requête POST
+        form = EnvoiMessage(request.POST)  # Nous reprenons les données
+        
+        if form.is_valid(): # Nous vérifions que les données envoyées sont valides
+            
+            # Ici nous pouvons traiter les données du formulaire
+            texte = form.cleaned_data['texte']
+            auteur = form.cleaned_data['auteur']
+            message=Message(auteur = auteur ,texte = texte)            
+            message.save()
+
+    else: # Si ce n'est pas du POST, c'est probablement une requête GET
+        form = EnvoiMessage()  # Nous créons un formulaire vide
+    
+    #conversation_courante.messages.add(message)
+    messages = Message.objects.all()
+    #messages=conversation_courante.messages
+
+    return render(request, 'discussion/discussion.html', locals())
+
+
