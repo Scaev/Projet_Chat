@@ -1,14 +1,6 @@
-{% if envoi %} 
-	<p>Votre conversation a été créée !</p>
-{% endif %}
+<p>Votre conversation a été créée avec succès!</p>
 
-<form action="{% url "discussion.views.creation_conversation" %}" method="post">
-	{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="Submit" />
+<a href="{% url "discussion.views.conversations" utilisateur.pseudo %}"> Revenir aux conversations</a>
 
-<a href="{% url "discussion.views.conversations" utilisateur.pseudo %}>
-Revenir aux conversations
-</a>
 
 

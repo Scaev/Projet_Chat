@@ -1,7 +1,7 @@
 <h1> Discussions en cours </h1>
 {% for conversation in conversations%}
 	
-{#	<a href="{% url "discussion.views.NomDeLaVue" conversation %}"> #}
+	<a href="{% url "discussion.views.discussion" conversation.id %}"> 
 		<div class="conversation">
                 	<h2> Amis qui participent à cette discussion </h2>
 		
@@ -9,10 +9,16 @@
 					<p> {{participant.pseudo}} </p>			
                 	{% endfor %}
 		</div>
-{#	</a> #}
+	</a> 
 	
 {% empty %}
 	<p> Vous n'êtes dans aucune conversation! </p>
 {% endfor %}
 
-{# <a href="{% url "discussion.views.creation_conversation" utilisateur%}"> #}
+{# <a href="/discussion/conversations/{{utilisateur.pseudo}}/creation_conversation"> Créer une nouvelle conversation </a> #}
+
+<form action="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" method="post">
+   {% csrf_token %}
+    <input id="pseudo_ami" type="text" name="pseudo_ami" value="{{pseudo_ami}}">
+    <input type="submit" value="Créer une nouvelle conversation" />
+</form> 
