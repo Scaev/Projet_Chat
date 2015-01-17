@@ -12,26 +12,28 @@ from django.template import RequestContext
 def connexion(request):
     
     if request.method == 'POST':  # S'il s'agit d'une requête POST
-        form = UserForm(request.POST)  # Nous reprenons les données
-        
+        form = ConnexionForm(request.POST)  # Nous reprenons les données
+            
         if form.is_valid(): # Nous vérifions que les données envoyées sont valides
             
             # Ici nous pouvons traiter les données du formulaire
-            pseudo = form.cleaned_data['pseudo']
+            identifiant = form.cleaned_data['identifiant']
             mot_de_passe = form.cleaned_data['mdp']
-            user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe)
+            #user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe)
             
             for utilisateur in Utilisateur.objects.all():
-                if user.pseudo==utilisateur.pseudo:
-                    if user.mot_de_passe== utilisateur.mot_de_passe:
-                        
-                        return HttpResponseRedirect(reverse('discussion.views.conversations',args=[user]))
+                if identifiant==utilisateur.pseudo or identifiant==utilisateur.telephone or identifiant==utilisateur.email:
+                    if mot_de_passe== utilisateur.mot_de_passe:
+                        #return HttpResponseRedirect(reverse('conversations',kwargs={'utilisateur':user})) 
+                        #return redirect('conversations',user='utilisateur')
+                        return HttpResponseRedirect(reverse('discussion.views.conversations',args=[utilisateur]))
                     else:
-                        return HttpResponse('Le pseudo est bon mais pas le mot de passe, essaie encore! :)')                  
+                        return HttpResponse('Le compte existe bien mais le mot de passe est erroné, essaie encore! :)')
             return HttpResponse('compte non existant, verifiez pseudo')
-
+        else:
+            return render_to_response('discussion/connexion.html', { 'form': form, },context_instance=RequestContext(request))
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
-        form = UserForm()  # Nous créons un formulaire vide
+        form = ConnexionForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/connexion.html',locals())
 
 def conversations(request,pseudo_utilisateur):
@@ -62,8 +64,6 @@ def creation_conversation(request,pseudo_utilisateur):
     else:
         form=ConversationCreationForm()
         return HttpResponse("Erreur, veuillez recommencer svp")
-   
-
 
 def inscription(request):
     if request.method == 'POST':  # S'il s'agit d'une requête POST
@@ -87,8 +87,8 @@ def inscription(request):
         return render(request, 'discussion/inscription.html', locals())
 
 def discussion(request,id_discussion):
-  #  conversation_courante = Conversation()
-   # conversation_courante.save()
+    #  conversation_courante = Conversation()
+    # conversation_courante.save()
     if request.method == 'POST':  # S'il s'agit d'une requête POST
         form = EnvoiMessage(request.POST)  # Nous reprenons les données
         
@@ -130,9 +130,9 @@ def changement(request):
             
             else:
                 return HttpResponse('Probleme dans les identifiants donnés')
-    else:
+        else:
         
-        return render_to_response('discussion/changement.html', { 'form': form, },context_instance=RequestContext(request))
+            return render_to_response('discussion/changement.html', { 'form': form, },context_instance=RequestContext(request))
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         form = ChangementForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/changement.html', locals())
