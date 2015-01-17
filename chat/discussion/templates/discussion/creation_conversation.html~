@@ -2,5 +2,5 @@
 
 <a href="{% url "discussion.views.conversations" utilisateur.pseudo %}"> Revenir aux conversations</a>
 
-<a href="/discussion/conversations/{{utilisateur.pseudo}}"> Créer une nouvelle conversation </a>
+
 
