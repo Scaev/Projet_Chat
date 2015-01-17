@@ -90,6 +90,7 @@ class ConnexionForm(forms.Form):
 
 class ConversationCreationForm(forms.Form):
     pseudo_ami = forms.CharField(max_length=20)
+<<<<<<< HEAD
     
 class ChangementForm(forms.Form):
     
@@ -154,3 +155,5 @@ class ChangementForm(forms.Form):
         except Utilisateur.DoesNotExist:
             raise forms.ValidationError("Cette adresse n'est pas présente dans la base de donnée")
     
+=======
+>>>>>>> c3a51e2a758db29c40a72e9ea62c9b3a2993d1fa
