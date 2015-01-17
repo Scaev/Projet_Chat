@@ -71,11 +71,7 @@ def creation_conversation(request,pseudo_utilisateur):
 <<<<<<< HEAD
                 return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur
         else:
-            return HttpResponse('Erreur, veuillez recommencer svp')              
-    else:
-        form=ConversationCreationForm()
-        return HttpResponse("Erreur, veuillez recommencer svp")
-
+            return HttpResponse('Erreur, veuillez recommencer svp (formulaire non valide)')              
 =======
                 return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur 
         else:
@@ -103,7 +99,7 @@ def ajout_ami_conversation(request,pseudo_utilisateur,id_conversation):
                 utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
                 ami=Utilisateur.objects.get(pseudo=pseudo_ami) #on verifie si ce pseudo existe dans la base de donnée                
                 conversation=Conversation.objects.get(id=id_conversation) #on récupère la conversation dans la base de donnée
-                if ami in conversation.objects.all():
+                if ami in conversation.participants.all():
                     return HttpResponse('Cette personne appartient déjà à la conversation!')
                 else:
                     conversation.participants.add(ami) #on ajoute l'ami à la conversation                       
@@ -112,11 +108,11 @@ def ajout_ami_conversation(request,pseudo_utilisateur,id_conversation):
                 return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur 
         else:
             return HttpResponse("Erreur, formulaire non valide")             
+>>>>>>> c3a51e2a758db29c40a72e9ea62c9b3a2993d1fa
     else:
         form=ConversationCreationForm()
         return HttpResponse("Erreur, veuillez recommencer svp")
 
->>>>>>> c3a51e2a758db29c40a72e9ea62c9b3a2993d1fa
 def inscription(request):
     if request.method == 'POST':  # S'il s'agit d'une requête POST
         form = InscriptionForm(request.POST)  # Nous reprenons les données

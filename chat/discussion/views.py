@@ -44,14 +44,7 @@ def conversations(request,pseudo_utilisateur):
     except Utilisateur.DoesNotExist:
         return HttpResponse('Erreur')
 
-<<<<<<< HEAD
-def creation_conversation(request,pseudo_utilisateur):	   
-    if request.method=='POST':          
-        form=ConversationCreationForm(request.POST)
-                
-        if form.is_valid():           
-            pseudo_ami=form.cleaned_data['pseudo_ami']            
-=======
+
 def creation_conversation(request,pseudo_utilisateur):	
     if request.method=='POST':        
         form=ConversationCreationForm(request.POST)        
@@ -59,7 +52,7 @@ def creation_conversation(request,pseudo_utilisateur):
             pseudo_ami=form.cleaned_data['pseudo_ami']
             if pseudo_ami==pseudo_utilisateur: #verification que l'utilisateur n'a pas entré son propre pseudo
                 return HttpResponse('Le pseudo de votre ami doit être différent du vôtre !')            
->>>>>>> c3a51e2a758db29c40a72e9ea62c9b3a2993d1fa
+
             try:
                 utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
                 ami=Utilisateur.objects.get(pseudo=pseudo_ami) #on verifie si ce pseudo existe dans la base de donnée                
@@ -68,11 +61,6 @@ def creation_conversation(request,pseudo_utilisateur):
                 nouvelle_conversation.participants.add(utilisateur,ami) #on ajoute l'ami et l'utilisateur à la conversation                       
                 return render(request, 'discussion/creation_conversation.html',{'utilisateur':utilisateur})
             except Utilisateur.DoesNotExist:
-<<<<<<< HEAD
-                return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur
-        else:
-            return HttpResponse('Erreur, veuillez recommencer svp (formulaire non valide)')              
-=======
                 return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur 
         else:
             return HttpResponse("Erreur, formulaire non valide")             
@@ -108,7 +96,6 @@ def ajout_ami_conversation(request,pseudo_utilisateur,id_conversation):
                 return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur 
         else:
             return HttpResponse("Erreur, formulaire non valide")             
->>>>>>> c3a51e2a758db29c40a72e9ea62c9b3a2993d1fa
     else:
         form=ConversationCreationForm()
         return HttpResponse("Erreur, veuillez recommencer svp")
