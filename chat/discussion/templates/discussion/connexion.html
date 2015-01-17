@@ -3,8 +3,11 @@
 <form action="{% url "discussion.views.connexion" %}" method="post">
    {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Connexion" />
 </form>
 
 <p>Pas encore de compte??? Inscris toi!</p>
 <li><a href="/discussion/inscription">inscription</a></li>
+
+<p>Mot de passe oublié?</p>
+<li><a href="/discussion/changement">changement</a></li>

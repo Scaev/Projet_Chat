@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-from discussion.forms import UserForm,ConversationCreationForm
+from discussion.forms import ConversationCreationForm,ConnexionForm, InscriptionForm,ChangementForm
 from django.http import HttpResponse,HttpResponseRedirect
-from django.shortcuts import redirect,render
+from django.shortcuts import redirect,render,render_to_response
 from models import Utilisateur,Conversation,Message#,EnvoiMessage
 from django.core.urlresolvers import reverse
-
+from django.template import RequestContext
+# render_to_response est utilisé pour l'affichage des erreurs dans les formulaires.
+# de même pour RequestContext
 
 
 def connexion(request):
@@ -13,7 +15,7 @@ def connexion(request):
         form = UserForm(request.POST)  # Nous reprenons les données
         
         if form.is_valid(): # Nous vérifions que les données envoyées sont valides
-            existant=False;
+            
             # Ici nous pouvons traiter les données du formulaire
             pseudo = form.cleaned_data['pseudo']
             mot_de_passe = form.cleaned_data['mdp']
@@ -22,8 +24,7 @@ def connexion(request):
             for utilisateur in Utilisateur.objects.all():
                 if user.pseudo==utilisateur.pseudo:
                     if user.mot_de_passe== utilisateur.mot_de_passe:
-                        #return HttpResponseRedirect(reverse('conversations',kwargs={'utilisateur':user})) 
-                        #return redirect('conversations',user='utilisateur')
+                        
                         return HttpResponseRedirect(reverse('discussion.views.conversations',args=[user]))
                     else:
                         return HttpResponse('Le pseudo est bon mais pas le mot de passe, essaie encore! :)')                  
@@ -63,31 +64,26 @@ def creation_conversation(request,pseudo_utilisateur):
         return HttpResponse("Erreur, veuillez recommencer svp")
    
 
-def accueil(request):
-    return HttpResponse('Tu es bien connecté! :)')
 
 def inscription(request):
-
     if request.method == 'POST':  # S'il s'agit d'une requête POST
-        
-        form = UserForm(request.POST)  # Nous reprenons les données
+        form = InscriptionForm(request.POST)  # Nous reprenons les données
         
         if form.is_valid(): # Nous vérifions que les données envoyées sont valides
             
             # Ici nous pouvons traiter les données du formulaire
             pseudo = form.cleaned_data['pseudo']
             mot_de_passe = form.cleaned_data['mdp']
-            user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe)
-            for utilisateur in Utilisateur.objects.all():
-                if utilisateur.pseudo==user.pseudo:
-                    return HttpResponse('Pseudo deja utilisé desolé')
-            
-            
+            telephone=form.cleaned_data['telephone']
+            email=form.cleaned_data['email']
+            user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe,telephone=telephone,email=email)
             user.save()
-            return redirect(accueil)
-
+            return HttpResponseRedirect(reverse('discussion.views.conversations',args=[user]))
+        else:
+            
+            return render_to_response('discussion/inscription.html', { 'form': form, },context_instance=RequestContext(request))
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
-        form = UserForm()  # Nous créons un formulaire vide
+        form = InscriptionForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/inscription.html', locals())
 
 def discussion(request,id_discussion):
@@ -113,4 +109,31 @@ def discussion(request,id_discussion):
 
     return render(request, 'discussion/discussion.html', locals())
 
+def changement(request):
+    if request.method == 'POST':  # S'il s'agit d'une requête POST
+        form = ChangementForm(request.POST)  # Nous reprenons les données
+        
+        if form.is_valid(): # Nous vérifions que les données envoyées sont valides
+            
+            
+            utilisateur_pseudo=form.cleaned_data['pseudo']
+            utilisateur_email=form.cleaned_data['email']
+            utilisateur_telephone=form.cleaned_data['telephone']
+            nouveau_mot_de_passe = form.cleaned_data['mdp']
+            
+            if utilisateur_pseudo==utilisateur_email==utilisateur_telephone:
+                
+                utilisateur=Utilisateur.objects.get(pseudo=utilisateur_pseudo)
+                utilisateur.mot_de_passe=nouveau_mot_de_passe
+                utilisateur.save()
+                return  HttpResponseRedirect(reverse('discussion.views.conversations',args=[utilisateur]))
+            
+            else:
+                return HttpResponse('Probleme dans les identifiants donnés')
+    else:
+        
+        return render_to_response('discussion/changement.html', { 'form': form, },context_instance=RequestContext(request))
+    else: # Si ce n'est pas du POST, c'est probablement une requête GET
+        form = ChangementForm()  # Nous créons un formulaire vide
+        return render(request, 'discussion/changement.html', locals())
 

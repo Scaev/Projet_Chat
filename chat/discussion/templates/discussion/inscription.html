@@ -1,7 +1,8 @@
 <h1>Page d'inscription</h1>
 
 <form action="{% url "discussion.views.inscription" %}" method="post">
-    {% csrf_token %}
+   {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Submit" />
+    <input type="submit" value="S'inscrire!" />
 </form>
+

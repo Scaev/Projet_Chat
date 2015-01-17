@@ -1,0 +1,8 @@
+<h1>Changement de mot de passe</h1>
+<P> Nous devons verifier votre identité, veuillez inserez votre mot de passe, pseudo et adresse mail pour changer de mot de passe </P>
+<form action="{% url "discussion.views.changement" %}" method="post">
+   {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Modifier mot de passe" />
+</form>
+
