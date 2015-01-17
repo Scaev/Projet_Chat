@@ -2,8 +2,8 @@
 
 <form action="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" method="post">
    {% csrf_token %}
-    <p> Entrer le pseudo d'un ami dans le champs suivant ! </p>
-    <input type="text" value="{{pseudo_ami}}">
+   <p> Entrer le pseudo d'un ami dans le champs suivant: </p>
+    {{ form.as_p }}    
     <input type="submit" value="Créer une nouvelle conversation" />
 </form> 
 

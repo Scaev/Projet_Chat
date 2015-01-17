@@ -89,7 +89,7 @@ class ConnexionForm(forms.Form):
         return mdp
 
 class ConversationCreationForm(forms.Form):
-    pseudo_ami=forms.CharField(max_length=20,label="pseudo")
+    pseudo_ami = forms.CharField(max_length=20,required=True)
     
 class ChangementForm(forms.Form):
     

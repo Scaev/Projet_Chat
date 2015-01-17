@@ -44,13 +44,11 @@ def conversations(request,pseudo_utilisateur):
     except Utilisateur.DoesNotExist:
         return HttpResponse('Erreur')
 
-def creation_conversation(request,pseudo_utilisateur):
-	
-    if request.method=='POST':
-        
+def creation_conversation(request,pseudo_utilisateur):	   
+    if request.method=='POST':          
         form=ConversationCreationForm(request.POST)
-        
-        if form.is_valid():
+                
+        if form.is_valid():           
             pseudo_ami=form.cleaned_data['pseudo_ami']            
             try:
                 utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
@@ -60,7 +58,9 @@ def creation_conversation(request,pseudo_utilisateur):
                 nouvelle_conversation.participants.add(utilisateur,ami) #on ajoute l'ami et l'utilisateur à la conversation                       
                 return render(request, 'discussion/creation_conversation.html',{'utilisateur':utilisateur})
             except Utilisateur.DoesNotExist:
-                return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur              
+                return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur
+        else:
+            return HttpResponse('Erreur, veuillez recommencer svp (formulaire non valide)')              
     else:
         form=ConversationCreationForm()
         return HttpResponse("Erreur, veuillez recommencer svp")
