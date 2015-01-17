@@ -6,4 +6,4 @@ class UserForm(forms.Form):
     mdp = forms.CharField(widget=forms.PasswordInput)
 
 class ConversationCreationForm(forms.Form):
-    pseudo_ami=forms.CharField(max_length=20)
+    pseudo_ami = forms.CharField(max_length=20)

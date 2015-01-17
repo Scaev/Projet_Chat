@@ -44,12 +44,9 @@ def conversations(request,pseudo_utilisateur):
     except Utilisateur.DoesNotExist:
         return HttpResponse('Erreur')
 
-def creation_conversation(request,pseudo_utilisateur):
-	
-    if request.method=='POST':
-        
-        form=ConversationCreationForm(request.POST)
-        
+def creation_conversation(request,pseudo_utilisateur):	
+    if request.method=='POST':        
+        form=ConversationCreationForm(request.POST)        
         if form.is_valid():
             pseudo_ami=form.cleaned_data['pseudo_ami']            
             try:
@@ -60,10 +57,20 @@ def creation_conversation(request,pseudo_utilisateur):
                 nouvelle_conversation.participants.add(utilisateur,ami) #on ajoute l'ami et l'utilisateur à la conversation                       
                 return render(request, 'discussion/creation_conversation.html',{'utilisateur':utilisateur})
             except Utilisateur.DoesNotExist:
-                return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur              
+                return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur 
+        else:
+            return HttpResponse("Erreur, formulaire non valide")             
     else:
         form=ConversationCreationForm()
         return HttpResponse("Erreur, veuillez recommencer svp")
+
+def quitter_conversation(request,pseudo_utilisateur,id_conversation):
+    utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
+    conversation=Conversation.objects.get(id=id_conversation)
+    conversation.participants.remove(utilisateur)
+    if conversation.participants.count()<2: #s'il ne reste qu'une personne dans la conversation, celle-ci est supprimée
+        conversation.delete()
+    return render(request, 'discussion/quitter_conversation.html',{'utilisateur':utilisateur})
 
 def inscription(request):
     if request.method == 'POST':  # S'il s'agit d'une requête POST

@@ -1,0 +1,6 @@
+<p>Votre conversation a été créée avec succès!</p>
+
+<a href="{% url "discussion.views.conversations" utilisateur.pseudo %}"> Revenir aux conversations</a>
+
+
+
