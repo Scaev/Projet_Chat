@@ -77,20 +77,46 @@ class ConnexionForm(forms.Form):
     mdp = forms.CharField(widget=forms.PasswordInput,required=False)
     
     def clean_identifiant(self):
+        existant=False
         identifiant=self.cleaned_data['identifiant']
-        longueur=len(identifiant)
         est_vide(identifiant)
+        
+        for utilisateur in Utilisateur.objects.all():
+            if identifiant==utilisateur.pseudo or identifiant==utilisateur.telephone or identifiant==utilisateur.email:
+                existant=True
+        
+                
+        if existant==False:
+            raise forms.ValidationError("Compte non identifié, verifiez paramètres.")
+        
         
         return identifiant
     
     def clean_mdp(self):
         mdp= self.cleaned_data['mdp']
         est_vide(mdp)
+        
         return mdp
 
+
+
+
+
+
+
 class ConversationCreationForm(forms.Form):
-    pseudo_ami = forms.CharField(max_length=20,required=True)
+    pseudo_ami = forms.CharField(max_length=20,required=False)
     
+    def clean_pseudo(self):
+        existant=False
+        pseudo_ami=self.cleaned_data['pseudo_ami']
+        est_vide(pseudo_ami)
+        
+
+
+        return pseudo_ami
+
+
 class ChangementForm(forms.Form):
     
     pseudo=forms.CharField(min_length=1,max_length=20,required=False)
