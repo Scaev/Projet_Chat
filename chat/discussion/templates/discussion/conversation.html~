@@ -1,0 +1,14 @@
+<h1> Conversation {{id_conversation}} </h1>
+
+
+{% for message in messages %}
+
+<i>{{message.date}}</i> <b>{{message.auteur}} </b> : {{message.texte}} <br>
+
+{% endfor %}
+
+<form action="{% url "discussion.views.conversation" id_conversation %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Envoyer" />
+</form>

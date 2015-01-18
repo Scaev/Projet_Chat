@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from discussion.forms import ConversationCreationForm,ConnexionForm, InscriptionForm,ChangementForm
+from discussion.forms import ConversationCreationForm,ConnexionForm, InscriptionForm,ChangementForm, EnvoiMessage
 from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import redirect,render,render_to_response
 from models import Utilisateur,Conversation,Message#,EnvoiMessage
@@ -121,9 +121,11 @@ def inscription(request):
         form = InscriptionForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/inscription.html', locals())
 
-def discussion(request,id_discussion):
+def conversation(request,id_conversation, pseudo_utilisateur):
     #  conversation_courante = Conversation()
     # conversation_courante.save()
+    utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
+
     if request.method == 'POST':  # S'il s'agit d'une requête POST
         form = EnvoiMessage(request.POST)  # Nous reprenons les données
         
@@ -142,7 +144,7 @@ def discussion(request,id_discussion):
     messages = Message.objects.all()
     #messages=conversation_courante.messages
 
-    return render(request, 'discussion/discussion.html', locals())
+    return render(request, 'discussion/conversation.html', locals())
 
 def changement(request):
     if request.method == 'POST':  # S'il s'agit d'une requête POST

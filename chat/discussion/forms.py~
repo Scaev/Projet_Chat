@@ -89,8 +89,7 @@ class ConnexionForm(forms.Form):
         return mdp
 
 class ConversationCreationForm(forms.Form):
-    pseudo_ami = forms.CharField(max_length=20)
-<<<<<<< HEAD
+    pseudo_ami = forms.CharField(max_length=20,required=True)
     
 class ChangementForm(forms.Form):
     
@@ -154,6 +153,8 @@ class ChangementForm(forms.Form):
             return utilisateur_email
         except Utilisateur.DoesNotExist:
             raise forms.ValidationError("Cette adresse n'est pas présente dans la base de donnée")
+
+class EnvoiMessage(forms.Form):
+    texte=forms.CharField(max_length=500)
+    auteur=forms.CharField(max_length=20)
     
-=======
->>>>>>> c3a51e2a758db29c40a72e9ea62c9b3a2993d1fa
