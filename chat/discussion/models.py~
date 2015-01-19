@@ -3,15 +3,13 @@ from django.db import models
 class Utilisateur(models.Model):
     pseudo = models.CharField(max_length=20)
     mot_de_passe = models.CharField(max_length=20)
+    telephone=models.CharField(max_length=20)
+    email=models.CharField(max_length=30)
 
     def __str__(self):
         return self.pseudo
 
-    def est_different(self,other):
-        if str(self.pseudo)!=str(other.pseudo):
-            return True
-        else:
-            return False    
+  
     
     
 class Message(models.Model):
@@ -20,6 +18,7 @@ class Message(models.Model):
     auteur = models.ForeignKey('Utilisateur', related_name="messages")
 
 class Conversation(models.Model):
+    numero = models.CharField(max_length=20)
     participants = models.ManyToManyField(Utilisateur,related_name="conversations")
     messages = models.ManyToManyField(Message)
 

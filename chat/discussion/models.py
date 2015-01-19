@@ -18,7 +18,6 @@ class Message(models.Model):
     auteur = models.ForeignKey('Utilisateur', related_name="messages")
 
 class Conversation(models.Model):
-    numero = models.CharField(max_length=20)
     participants = models.ManyToManyField(Utilisateur,related_name="conversations")
     messages = models.ManyToManyField(Message)
 

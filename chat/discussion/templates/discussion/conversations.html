@@ -10,7 +10,7 @@
 
 {% for conversation in conversations%}
 	
-	<a href="{% url "discussion.views.discussion" conversation.id %}"> 
+	<a href="{% url "discussion.views.conversation" utilisateur.pseudo conversation.id %}"> 
 		<div class="conversation">
                 	<h2> Amis qui participent à cette discussion </h2>
 		

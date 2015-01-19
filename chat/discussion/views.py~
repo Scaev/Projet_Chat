@@ -17,19 +17,20 @@ def connexion(request):
         if form.is_valid(): # Nous vérifions que les données envoyées sont valides
             
             # Ici nous pouvons traiter les données du formulaire
-            identifiant = form.cleaned_data['identifiant']
-            mot_de_passe = form.cleaned_data['mdp']
-            #user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe)
             
+            identifiant=form.clean_identifiant()
+            mdp=form.clean_mdp()
             for utilisateur in Utilisateur.objects.all():
                 if identifiant==utilisateur.pseudo or identifiant==utilisateur.telephone or identifiant==utilisateur.email:
-                    if mot_de_passe== utilisateur.mot_de_passe:
-                        #return HttpResponseRedirect(reverse('conversations',kwargs={'utilisateur':user})) 
-                        #return redirect('conversations',user='utilisateur')
-                        return HttpResponseRedirect(reverse('discussion.views.conversations',args=[utilisateur]))
+                    compte=utilisateur
+                    if compte.mot_de_passe==mdp:
+
+    
+                        return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
                     else:
-                        return HttpResponse('Le compte existe bien mais le mot de passe est erroné, essaie encore! :)')
-            return HttpResponse('compte non existant, verifiez pseudo')
+                        return HttpResponse('Mauvais mot de passe')
+    # rajouter deux liens: un pour retourner sur la page de connexion , l autre pour changer de mdp
+        
         else:
             return render_to_response('discussion/connexion.html', { 'form': form, },context_instance=RequestContext(request))
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
@@ -63,7 +64,7 @@ def creation_conversation(request,pseudo_utilisateur):
             except Utilisateur.DoesNotExist:
                 return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur 
         else:
-            return HttpResponse("Erreur, formulaire non valide")             
+            return render(request, 'discussion/creation_conversation.html',locals())             
     else:
         form=ConversationCreationForm()
         return HttpResponse("Erreur, veuillez recommencer svp")
@@ -121,9 +122,12 @@ def inscription(request):
         form = InscriptionForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/inscription.html', locals())
 
-def conversation(request,id_conversation, pseudo_utilisateur):
-    #  conversation_courante = Conversation()
-    # conversation_courante.save()
+def conversation(request,pseudo_utilisateur, id_conversation):
+
+    conversation_courante=Conversation.objects.get(id=id_conversation)    
+
+    utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
+
     if request.method == 'POST':  # S'il s'agit d'une requête POST
         form = EnvoiMessage(request.POST)  # Nous reprenons les données
         
@@ -131,16 +135,16 @@ def conversation(request,id_conversation, pseudo_utilisateur):
             
             # Ici nous pouvons traiter les données du formulaire
             texte = form.cleaned_data['texte']
-            auteur = form.cleaned_data['auteur']
-            message=Message(auteur = auteur ,texte = texte)            
+            #auteur = form.cleaned_data['auteur']
+            message=Message(auteur = utilisateur.pseudo ,texte = texte)            
             message.save()
+	    conversation_courante.messages.add(message)
 
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         form = EnvoiMessage()  # Nous créons un formulaire vide
+    	
     
-    #conversation_courante.messages.add(message)
-    messages = Message.objects.all()
-    #messages=conversation_courante.messages
+    #messages = Message.objects.all()
 
     return render(request, 'discussion/conversation.html', locals())
 

@@ -122,9 +122,10 @@ def inscription(request):
         form = InscriptionForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/inscription.html', locals())
 
-def conversation(request,id_conversation, pseudo_utilisateur):
-    #  conversation_courante = Conversation()
-    # conversation_courante.save()
+def conversation(request,pseudo_utilisateur, id_conversation):
+
+    conversation_courante=Conversation.objects.get(id=id_conversation)    
+
     utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
 
     if request.method == 'POST':  # S'il s'agit d'une requête POST
@@ -134,16 +135,16 @@ def conversation(request,id_conversation, pseudo_utilisateur):
             
             # Ici nous pouvons traiter les données du formulaire
             texte = form.cleaned_data['texte']
-            auteur = form.cleaned_data['auteur']
-            message=Message(auteur = auteur ,texte = texte)            
+            #auteur = form.cleaned_data['auteur']
+            message=Message(auteur = utilisateur ,texte = texte)            
             message.save()
+	    conversation_courante.messages.add(message)
 
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         form = EnvoiMessage()  # Nous créons un formulaire vide
+    	
     
-    #conversation_courante.messages.add(message)
-    messages = Message.objects.all()
-    #messages=conversation_courante.messages
+    #messages = Message.objects.all()
 
     return render(request, 'discussion/conversation.html', locals())
 

@@ -3,18 +3,14 @@
 <form action="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" method="post">
    {% csrf_token %}
    <p> Entrer le pseudo d'un ami dans le champs suivant: </p>
-<<<<<<< HEAD
-    {{ form.as_p }}    
-=======
     <input id="pseudo_ami" type="text" name="pseudo_ami" value="{{pseudo_ami}}">
->>>>>>> c3a51e2a758db29c40a72e9ea62c9b3a2993d1fa
     <input type="submit" value="Créer une nouvelle conversation" />
 </form> 
 
 
 {% for conversation in conversations%}
 	
-	<a href="{% url "discussion.views.discussion" conversation.id %}"> 
+	<a href="{% url "discussion.views.conversation" kwargs=[utilisateur.pseudo,conversation.id] %}"> 
 		<div class="conversation">
                 	<h2> Amis qui participent à cette discussion </h2>
 		
@@ -24,7 +20,7 @@
 		</div>
 	</a>
 
-<form action="{% url "discussion.views.ajout_ami_conversation" utilisateur.pseudo conversation.id%}" method="post">
+<form action="{% url "discussion.views.ajout_ami_conversation" utilisateur.pseudo conversation.id %}" method="post">
    {% csrf_token %}  
     <input id="pseudo_ami" type="text" name="pseudo_ami" value="{{pseudo_ami}}">
     <input type="submit" value="Ajouter un ami" />

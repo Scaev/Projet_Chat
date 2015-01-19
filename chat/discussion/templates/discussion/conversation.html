@@ -1,13 +1,13 @@
 <h1> Conversation {{id_conversation}} </h1>
 
 
-{% for message in messages %}
+{% for message in conversation_courante.messages.all %}
 
-<i>{{message.date}}</i> <b>{{utilisateur.pseudo}} </b> : {{message.texte}} <br>
+<i>{{message.date}}</i> <b>{{message.auteur}} </b> : {{message.texte}} <br>
 
 {% endfor %}
 
-<form action="{% url "discussion.views.conversation" id_conversation pseudo_utilisateur %}" method="post">
+<form action="{% url "discussion.views.conversation" utilisateur.pseudo conversation_courante.id %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Envoyer" />

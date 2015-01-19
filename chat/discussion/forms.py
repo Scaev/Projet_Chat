@@ -182,5 +182,5 @@ class ChangementForm(forms.Form):
 
 class EnvoiMessage(forms.Form):
     texte=forms.CharField(max_length=500)
-    auteur=forms.CharField(max_length=20)
+    #auteur=forms.CharField(max_length=20)
     
