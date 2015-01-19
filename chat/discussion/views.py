@@ -5,6 +5,7 @@ from django.shortcuts import redirect,render,render_to_response
 from models import Utilisateur,Conversation,Message#,EnvoiMessage
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+import hashlib
 # render_to_response est utilisé pour l'affichage des erreurs dans les formulaires.
 # de même pour RequestContext
 
@@ -23,9 +24,9 @@ def connexion(request):
             for utilisateur in Utilisateur.objects.all():
                 if identifiant==utilisateur.pseudo or identifiant==utilisateur.telephone or identifiant==utilisateur.email:
                     compte=utilisateur
-                    if compte.mot_de_passe==mdp:
-
-    
+	            mdp_hash = hashlib.md5()
+		    mdp_hash.update(mdp)
+                    if compte.mot_de_passe==mdp_hash.hexdigest():
                         return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
                     else:
                         return HttpResponse('Mauvais mot de passe')
@@ -112,7 +113,9 @@ def inscription(request):
             mot_de_passe = form.cleaned_data['mdp']
             telephone=form.cleaned_data['telephone']
             email=form.cleaned_data['email']
-            user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe,telephone=telephone,email=email)
+	    mot_de_passe_hash = hashlib.md5()
+	    mot_de_passe_hash.update(mot_de_passe)
+            user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe_hash.hexdigest(),telephone=telephone,email=email)
             user.save()
             return HttpResponseRedirect(reverse('discussion.views.conversations',args=[user]))
         else:
