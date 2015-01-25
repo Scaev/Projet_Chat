@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+
 <h1> Discussions en cours </h1>
 
 <form action="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" method="post">
@@ -34,4 +37,4 @@
 {% empty %}
 	<p> Vous n'êtes dans aucune conversation! </p>
 {% endfor %}
-
+{% endblock %}

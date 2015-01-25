@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 <h1> Conversation {{id_conversation}}  -  Participants: {% for utilisateur in conversation_courante.participants.all %} {{utilisateur.pseudo}} {% endfor %}</h1>
 
 
@@ -14,3 +16,4 @@
 </form>
 
 <a href="{% url "discussion.views.conversations" utilisateur.pseudo %}"> Revenir aux conversations</a>
+{% endblock %}
