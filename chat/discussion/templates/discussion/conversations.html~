@@ -1,5 +1,9 @@
-<h1> Discussions en cours </h1>
+{% extends "base.html" %}
+{% block content %}
 
+<h1> Discussions en cours </h1>
+<span id="texteJQ"></span>
+<p id="test"> Yo </p>
 <form action="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" method="post">
    {% csrf_token %}
    <p> Entrer le pseudo d'un ami dans le champs suivant: </p>
@@ -34,4 +38,4 @@
 {% empty %}
 	<p> Vous n'êtes dans aucune conversation! </p>
 {% endfor %}
-
+{% endblock %}

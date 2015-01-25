@@ -3,11 +3,12 @@
 <html lang="fr">
 <head>
    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" />
-    {#<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>#}
-    <script type="text/javascript" src="{{ STATIC_URL }} js/javascript.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/javascript.js"></script>
    {#<title>{% block title %}Mon blog sur les crêpes bretonnes{% endblock %}</title>#}
 </head>
 <body>
+<span id="texteJQ"></span>
 {#<header>Crêpes bretonnes</header>#}
    <section id="content">
        {% block content %}{% endblock %}
