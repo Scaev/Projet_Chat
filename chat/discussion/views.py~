@@ -136,7 +136,7 @@ def conversation(request,pseudo_utilisateur, id_conversation):
             # Ici nous pouvons traiter les données du formulaire
             texte = form.cleaned_data['texte']
             #auteur = form.cleaned_data['auteur']
-            message=Message(auteur = utilisateur.pseudo ,texte = texte)            
+            message=Message(auteur = utilisateur ,texte = texte)            
             message.save()
 	    conversation_courante.messages.add(message)
 

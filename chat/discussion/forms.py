@@ -181,6 +181,6 @@ class ChangementForm(forms.Form):
             raise forms.ValidationError("Cette adresse n'est pas présente dans la base de donnée")
 
 class EnvoiMessage(forms.Form):
-    texte=forms.CharField(max_length=500)
-    #auteur=forms.CharField(max_length=20)
+    texte=forms.CharField(max_length=500,widget=forms.Textarea)
+   
     
