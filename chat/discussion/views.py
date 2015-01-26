@@ -5,7 +5,8 @@ from django.shortcuts import redirect,render,render_to_response
 from models import Utilisateur,Conversation,Message#,EnvoiMessage
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-import hashlib
+
+
 # render_to_response est utilisé pour l'affichage des erreurs dans les formulaires.
 # de même pour RequestContext
 
@@ -178,4 +179,8 @@ def changement(request):
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         form = ChangementForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/changement.html', locals())
+
+
+
+    	
 

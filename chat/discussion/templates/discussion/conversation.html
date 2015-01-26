@@ -9,11 +9,12 @@
 
 {% endfor %}
 
-<form action="{% url "discussion.views.conversation" utilisateur.pseudo conversation_courante.id %}" method="post">
+<form id="submit_message" action="{% url "discussion.views.conversation" utilisateur.pseudo conversation_courante.id %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Envoyer" />
 </form>
 
 <a href="{% url "discussion.views.conversations" utilisateur.pseudo %}"> Revenir aux conversations</a>
+
 {% endblock %}

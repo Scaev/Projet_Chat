@@ -5,6 +5,11 @@ from django.shortcuts import redirect,render,render_to_response
 from models import Utilisateur,Conversation,Message#,EnvoiMessage
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+import hashlib
+from django.core.context_processors import csrf
+from django.views.decorators.csrf import csrf_exempt
+from django.utils import simplejson
+
 # render_to_response est utilisé pour l'affichage des erreurs dans les formulaires.
 # de même pour RequestContext
 
@@ -23,9 +28,9 @@ def connexion(request):
             for utilisateur in Utilisateur.objects.all():
                 if identifiant==utilisateur.pseudo or identifiant==utilisateur.telephone or identifiant==utilisateur.email:
                     compte=utilisateur
-                    if compte.mot_de_passe==mdp:
-
-    
+	            mdp_hash = hashlib.md5()
+		    mdp_hash.update(mdp)
+                    if compte.mot_de_passe==mdp_hash.hexdigest():
                         return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
                     else:
                         return HttpResponse('Mauvais mot de passe')
@@ -112,7 +117,9 @@ def inscription(request):
             mot_de_passe = form.cleaned_data['mdp']
             telephone=form.cleaned_data['telephone']
             email=form.cleaned_data['email']
-            user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe,telephone=telephone,email=email)
+	    mot_de_passe_hash = hashlib.md5()
+	    mot_de_passe_hash.update(mot_de_passe)
+            user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe_hash.hexdigest(),telephone=telephone,email=email)
             user.save()
             return HttpResponseRedirect(reverse('discussion.views.conversations',args=[user]))
         else:
@@ -136,7 +143,7 @@ def conversation(request,pseudo_utilisateur, id_conversation):
             # Ici nous pouvons traiter les données du formulaire
             texte = form.cleaned_data['texte']
             #auteur = form.cleaned_data['auteur']
-            message=Message(auteur = utilisateur.pseudo ,texte = texte)            
+            message=Message(auteur = utilisateur ,texte = texte)            
             message.save()
 	    conversation_courante.messages.add(message)
 
@@ -175,4 +182,34 @@ def changement(request):
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         form = ChangementForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/changement.html', locals())
+
+
+@csrf_exempt
+def ajax_view(request):
+     
+    conversation_courante=Conversation.objects.get(id=id_conversation)    
+
+    utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
+
+    if request.method == 'POST':  # S'il s'agit d'une requête POST
+        form = EnvoiMessage(request.POST)  # Nous reprenons les données
+        
+        if form.is_valid(): # Nous vérifions que les données envoyées sont valides
+            
+            # Ici nous pouvons traiter les données du formulaire
+            texte = form.cleaned_data['texte']
+            #auteur = form.cleaned_data['auteur']
+            message=Message(auteur = utilisateur ,texte = texte)            
+            message.save()
+	    conversation_courante.messages.add(message)
+
+    else: # Si ce n'est pas du POST, c'est probablement une requête GET
+        form = EnvoiMessage()  # Nous créons un formulaire vide
+    	
+    
+    #messages = Message.objects.all()
+
+    return render(request, 'discussion/conversation.html', locals())
+	
+    	
 
