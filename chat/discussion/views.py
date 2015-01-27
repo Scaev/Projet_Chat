@@ -5,6 +5,7 @@ from django.shortcuts import redirect,render,render_to_response
 from models import Utilisateur,Conversation,Message#,EnvoiMessage
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+import hashlib
 
 
 # render_to_response est utilisé pour l'affichage des erreurs dans les formulaires.

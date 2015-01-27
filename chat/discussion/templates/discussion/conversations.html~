@@ -14,14 +14,14 @@
 {% for conversation in conversations%}
     <div class="conversation">
 	<span class="conversation_gauche">
-		<a   href="{% url "discussion.views.conversation" utilisateur.pseudo conversation.id %}"> 
-		
+		<a href="{% url "discussion.views.conversation" utilisateur.pseudo conversation.id %}"> 
+			<div>
 			<h2> Amis qui participent à cette discussion </h2>
 
 			{% for participant in conversation.participants.all %}              	
 					<p> {{participant.pseudo}} </p>			
 			{% endfor %}
-			
+			</div>
 		</a>
 	</span>
 	<span class="conversation_droite">
