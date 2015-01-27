@@ -3,11 +3,11 @@
 
 <h1> Discussions en cours </h1>
 
-<a href="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" onclick="window.open(this.href); return false;"> Créer une nouvelle conversation </a>
+<a href="{% url "discussion.views.creation_nouvelle_conversation" utilisateur.pseudo %}" onclick="window.open(this.href); return false;"> Créer une nouvelle conversation </a>
 
 
-{% for conversation in conversations%}
-    <div class="conversation">
+{% for conversation in conversations%}   
+<div class="conversation">
 	<span class="conversation_gauche">
 		<a href="{% url "discussion.views.conversation" utilisateur.pseudo conversation.id %}"> 
 			<div>
@@ -36,5 +36,6 @@
 	
 {% empty %}
 	<p> Vous n'êtes dans aucune conversation! </p>
+
 {% endfor %}
 {% endblock %}

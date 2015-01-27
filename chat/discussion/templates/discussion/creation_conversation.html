@@ -1,10 +1,14 @@
-<form action="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" method="post">
+<form action="{% url "discussion.views.ajout_ami_creation_conversation" utilisateur.pseudo %}" method="post">
     {% csrf_token %}
     <input id="pseudo_ami" type="text" name="pseudo_ami" value="{{pseudo_ami}}">
     <input type="submit" value="Ajouter un ami" />
 </form> 
 
-<form action="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" method="post">
+{% for participant in utilisateur.conversations.all.last.participants.all %}
+    <p> {{ participant.pseudo }} </p>
+{% endfor %}
+
+<form action="{% url "discussion.views.conversations" utilisateur.pseudo %}" method="post">
     {% csrf_token %}
     <input type="submit" value="Créer la conversation" />
 </form>

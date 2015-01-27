@@ -183,4 +183,10 @@ class ChangementForm(forms.Form):
 class EnvoiMessage(forms.Form):
     texte=forms.CharField(max_length=500)
     #auteur=forms.CharField(max_length=20)
+
+class AjoutAmiForm(forms.Form):
+    pseudo_ami = forms.CharField(min_length=1,max_length=20,required=False)
+    
+
+
     
