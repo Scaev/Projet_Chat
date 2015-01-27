@@ -5,6 +5,7 @@ from django.shortcuts import redirect,render,render_to_response
 from models import Utilisateur,Conversation,Message#,EnvoiMessage
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+import hashlib
 
 
 # render_to_response est utilisé pour l'affichage des erreurs dans les formulaires.
@@ -48,6 +49,7 @@ def conversations(request,pseudo_utilisateur):
         return HttpResponse('Erreur')
 
 
+
 def creation_conversation(request,pseudo_utilisateur):	
     if request.method=='POST':        
         form=ConversationCreationForm(request.POST)        
@@ -77,7 +79,8 @@ def quitter_conversation(request,pseudo_utilisateur,id_conversation):
     conversation.participants.remove(utilisateur)
     if conversation.participants.count()<2: #s'il ne reste qu'une personne dans la conversation, celle-ci est supprimée
         conversation.delete()
-    return render(request, 'discussion/quitter_conversation.html',{'utilisateur':utilisateur})
+    conversations=utilisateur.conversation.all()
+    return render(request, 'discussion/conversations.html',{'conversations':conversations,'utilisateur':utilisateur})
 
 def ajout_ami_conversation(request,pseudo_utilisateur,id_conversation):	
     if request.method=='POST':        

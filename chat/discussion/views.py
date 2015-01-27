@@ -49,6 +49,7 @@ def conversations(request,pseudo_utilisateur):
         return HttpResponse('Erreur')
 
 
+
 def creation_conversation(request,pseudo_utilisateur):	
     if request.method=='POST':        
         form=ConversationCreationForm(request.POST)        
@@ -78,7 +79,8 @@ def quitter_conversation(request,pseudo_utilisateur,id_conversation):
     conversation.participants.remove(utilisateur)
     if conversation.participants.count()<2: #s'il ne reste qu'une personne dans la conversation, celle-ci est supprimée
         conversation.delete()
-    return render(request, 'discussion/quitter_conversation.html',{'utilisateur':utilisateur})
+    conversations=utilisateur.conversations.all()
+    return render(request, 'discussion/conversations.html',{'conversations':conversations,'utilisateur':utilisateur})
 
 def ajout_ami_conversation(request,pseudo_utilisateur,id_conversation):	
     if request.method=='POST':        

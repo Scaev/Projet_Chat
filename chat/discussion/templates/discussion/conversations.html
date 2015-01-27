@@ -3,12 +3,7 @@
 
 <h1> Discussions en cours </h1>
 
-<form action="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" method="post">
-   {% csrf_token %}
-   <p> Entrer le pseudo d'un ami dans le champs suivant: </p>
-    <input id="pseudo_ami" type="text" name="pseudo_ami" value="{{pseudo_ami}}">
-    <input type="submit" value="Créer une nouvelle conversation" />
-</form> 
+<a href="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" onclick="window.open(this.href); return false;"> Créer une nouvelle conversation </a>
 
 
 {% for conversation in conversations%}
