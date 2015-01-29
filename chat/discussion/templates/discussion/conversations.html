@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
+<head>
+    <title>Discussion en cours</title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}css/inscription.css">
+</head>
 <h1> Discussions en cours </h1>
 
 <a href="{% url "discussion.views.creation_nouvelle_conversation" utilisateur.pseudo %}" onclick="window.open(this.href); return false;"> Créer une nouvelle conversation </a>
@@ -20,11 +24,18 @@
 		</a>
 	</span>
 	<span class="conversation_droite">
-			<form action="{% url "discussion.views.ajout_ami_conversation" utilisateur.pseudo conversation.id %}" method="post">
+			<form action="{% url "discussion.views.ajout_ami_conversation" utilisateur.pseudo conversation.id %}" method="post" class="niceform" novalidate>
 			   {% csrf_token %}  
-			    <input id="pseudo_ami" type="text" name="pseudo_ami" value="{{pseudo_ami}}">
-			    <input type="submit" value="Ajouter un ami" />
+        
+            <dt>{{ form.pseudo_ami.label_tag }} </dt>
+            <dd>{{ form.pseudo_ami }}</dd>
+            <dd>{{ form.pseudo_ami.errors }}</dd>
+        
+			    <div class="break">
+            <input type="submit" value="Ajouter ami" />
+        </div>
 			</form>
+            
 
 			<form class="centre" action="{% url "discussion.views.quitter_conversation" utilisateur.pseudo conversation.id %}" method="post">
 			   {% csrf_token %}

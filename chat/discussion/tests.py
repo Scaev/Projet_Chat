@@ -96,3 +96,7 @@ class InscriptionTests(TestCase):
         form_data = {'pseudo': 'test','telephone':'0123456789','email':email_test,'mdp':'test'}
         form = InscriptionForm(data=form_data)
         self.assertEqual(form.is_valid(), False) # si le pseudo est deja occupé
+        
+class ConversationsTest(TestCase):
+    def test_est_vide(self):
+        

@@ -185,8 +185,18 @@ class EnvoiMessage(forms.Form):
     #auteur=forms.CharField(max_length=20)
 
 class AjoutAmiForm(forms.Form):
-    pseudo_ami = forms.CharField(min_length=1,max_length=20,required=False)
+    pseudo_ami = forms.CharField(min_length=1,max_length=20,required=False,label="Pseudo ami")
     
-
+    def clean_pseudo_ami(self):
+        existant=False
+        identifiant=self.cleaned_data['pseudo_ami']
+        est_vide(identifiant)
+        
+        for utilisateur in Utilisateur.objects.all():
+            if identifiant==utilisateur.pseudo:
+                existant=True        
+        if existant==False:
+            raise forms.ValidationError("Compte non identifié, verifiez paramètres.")
+        return identifiant    
 
     
