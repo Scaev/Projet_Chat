@@ -27,12 +27,9 @@ def connexion(request):
             for utilisateur in Utilisateur.objects.all():
                 if identifiant==utilisateur.pseudo or identifiant==utilisateur.telephone or identifiant==utilisateur.email:
                     compte=utilisateur
-	            mdp_hash = hashlib.md5()
-		    mdp_hash.update(mdp)
-                    if compte.mot_de_passe==mdp_hash.hexdigest():
-                        return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
-                    else:
-                        return HttpResponse('Mauvais mot de passe')
+	            
+            return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
+                    
     # rajouter deux liens: un pour retourner sur la page de connexion , l autre pour changer de mdp
         
         else:
