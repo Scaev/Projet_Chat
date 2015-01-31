@@ -1,7 +1,7 @@
 function form_post(){
 
 var datastring=$form.serialize();
-var id__conversation_courante=$conversation.id()
+
 $.ajax({
     url:"/ajax_url/",
     type:'POST',

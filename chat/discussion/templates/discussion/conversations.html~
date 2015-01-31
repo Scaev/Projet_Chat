@@ -1,37 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
 <h1> Discussions en cours </h1>
 
-<form action="{% url "discussion.views.creation_conversation" utilisateur.pseudo %}" method="post">
-   {% csrf_token %}
-   <p> Entrer le pseudo d'un ami dans le champs suivant: </p>
-    <input id="pseudo_ami" type="text" name="pseudo_ami" value="{{pseudo_ami}}">
-    <input type="submit" value="Créer une nouvelle conversation" />
-</form> 
+<a href="{% url "discussion.views.creation_nouvelle_conversation" utilisateur.pseudo %}" onclick="window.open(this.href); return false;"> Créer une nouvelle conversation </a>
 
 
 {% for conversation in conversations%}
-	
-	<a href="{% url "discussion.views.conversation" utilisateur.pseudo conversation.id %}"> 
-		<div class="conversation">
-                	<h2> Amis qui participent à cette discussion </h2>
-		
+{% if conversation.id==None %}    
+<div class="conversation">
+	<span class="conversation_gauche">
+		<a href="{% url "discussion.views.conversation" utilisateur.pseudo conversation.id %}"> 
+			<div>
+			<h2> Amis qui participent à cette discussion </h2>
+
 			{% for participant in conversation.participants.all %}              	
 					<p> {{participant.pseudo}} </p>			
-                	{% endfor %}
-		</div>
-	</a>
+			{% endfor %}
+			</div>
+		</a>
+	</span>
+	<span class="conversation_droite">
+			<form action="{% url "discussion.views.ajout_ami_conversation" utilisateur.pseudo conversation.id %}" method="post">
+			   {% csrf_token %}  
+			    <input id="pseudo_ami" type="text" name="pseudo_ami" value="{{pseudo_ami}}">
+			    <input type="submit" value="Ajouter un ami" />
+			</form>
 
-<form action="{% url "discussion.views.ajout_ami_conversation" utilisateur.pseudo conversation.id %}" method="post">
-   {% csrf_token %}  
-    <input id="pseudo_ami" type="text" name="pseudo_ami" value="{{pseudo_ami}}">
-    <input type="submit" value="Ajouter un ami" />
-</form>
- 
-<form action="{% url "discussion.views.quitter_conversation" utilisateur.pseudo conversation.id %}" method="post">
-   {% csrf_token %}
-    <input type="submit" value="Quitter la conversation" />
-</form>
+			<form class="centre" action="{% url "discussion.views.quitter_conversation" utilisateur.pseudo conversation.id %}" method="post">
+			   {% csrf_token %}
+			    <input type="submit" value="Quitter la conversation" />
+			</form>
+		
+	</span>
+    </div>
 	
 {% empty %}
 	<p> Vous n'êtes dans aucune conversation! </p>
+{% endif %}
 {% endfor %}
-
+{% endblock %}

@@ -11,7 +11,7 @@ class InscriptionForm(forms.Form):
     
     pseudo=forms.CharField(min_length=1,max_length=20,required=False)
     telephone=forms.CharField(required=False)
-    email=forms.EmailField(label="Votre adresse mail",required=False)
+    email=forms.EmailField(label="Mail",required=False)
     mdp = forms.CharField(widget=forms.PasswordInput,min_length=1,label="mot de passe",required=False)
     
 
@@ -73,7 +73,7 @@ class InscriptionForm(forms.Form):
 
 
 class ConnexionForm(forms.Form):
-    identifiant=forms.CharField(max_length=20,label="inserez votre adresse mail, pseudo ou telephone svp \n",required=False)
+    identifiant=forms.CharField(max_length=20,label="Pseudo, mail ou telephone",required=False)
     mdp = forms.CharField(widget=forms.PasswordInput,required=False)
     
     def clean_identifiant(self):
@@ -122,7 +122,7 @@ class ChangementForm(forms.Form):
     pseudo=forms.CharField(min_length=1,max_length=20,required=False)
     telephone=forms.CharField(required=False)
     email=forms.EmailField(label="Votre adresse mail",required=False)
-    mdp = forms.CharField(widget=forms.PasswordInput,min_length=1,label="nouveau mot de passe",required=False)
+    mdp = forms.CharField(widget=forms.PasswordInput,min_length=1,label="Nouveau mot de passe",required=False)
     
     def clean_telephone(self):
         telephone = self.cleaned_data['telephone']
@@ -182,5 +182,20 @@ class ChangementForm(forms.Form):
 
 class EnvoiMessage(forms.Form):
     texte=forms.CharField(max_length=500,widget=forms.Textarea)
-   
+
+
+class AjoutAmiForm(forms.Form):
+    pseudo_ami = forms.CharField(min_length=1,max_length=20,required=False,label="Pseudo ami")
     
+    def clean_pseudo_ami(self):
+        existant=False
+        identifiant=self.cleaned_data['pseudo_ami']
+        est_vide(identifiant)
+        
+        for utilisateur in Utilisateur.objects.all():
+            if identifiant==utilisateur.pseudo:
+                existant=True        
+        if existant==False:
+            raise forms.ValidationError("Compte non identifié, verifiez paramètres.")
+        return identifiant    
+

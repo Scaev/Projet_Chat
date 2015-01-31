@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
-from discussion.forms import ConversationCreationForm,ConnexionForm, InscriptionForm,ChangementForm, EnvoiMessage
+from discussion.forms import ConnexionForm,InscriptionForm,ChangementForm,EnvoiMessage,AjoutAmiForm
 from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import redirect,render,render_to_response
-from models import Utilisateur,Conversation,Message#,EnvoiMessage
+from models import Utilisateur,Conversation,Message
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from django.shortcuts import get_object_or_404
 import hashlib
+
 # render_to_response est utilisé pour l'affichage des erreurs dans les formulaires.
 # de même pour RequestContext
+
 
 
 def connexion(request):
@@ -39,35 +42,42 @@ def connexion(request):
         return render(request, 'discussion/connexion.html',locals())
 
 def conversations(request,pseudo_utilisateur):
-    try:
-        utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
-        conversations=utilisateur.conversations.all()
-        return render(request,'discussion/conversations.html',{'conversations':conversations,'utilisateur':utilisateur})
-    except Utilisateur.DoesNotExist:
-        return HttpResponse('Erreur')
+    utilisateur=get_object_or_404(Utilisateur,pseudo=pseudo_utilisateur)
+    conversations=utilisateur.conversations.all()
+    for conversation in conversations:
+        if conversation.participants.count()<2:
+            conversation.delete()
+    conversations=utilisateur.conversations.all()
+    return render(request,'discussion/conversations.html',{'conversations':conversations,'utilisateur':utilisateur})
 
+def creation_nouvelle_conversation(request,pseudo_utilisateur):    
+    utilisateur=get_object_or_404(Utilisateur,pseudo=pseudo_utilisateur)
+    nouvelle_conversation=Conversation()
+    nouvelle_conversation.save()
+    nouvelle_conversation.participants.add(utilisateur)
+    return render(request,'discussion/creation_conversation.html',{'utilisateur':utilisateur})
 
-def creation_conversation(request,pseudo_utilisateur):	
-    if request.method=='POST':        
-        form=ConversationCreationForm(request.POST)        
-        if form.is_valid():
+def creation_conversation(request,pseudo_utilisateur):
+    utilisateur=get_object_or_404(Utilisateur,pseudo=pseudo_utilisateur)
+    return render(request,'discussion/creation_conversation.html',{'utilisateur':utilisateur})
+
+def ajout_ami_creation_conversation(request,pseudo_utilisateur):
+    if request.method == 'POST':  # S'il s'agit d'une requête POST
+        form = AjoutAmiForm(request.POST)  # Nous reprenons les données
+            
+        if form.is_valid(): # Nous vérifions que les données envoyées sont valides    
             pseudo_ami=form.cleaned_data['pseudo_ami']
-            if pseudo_ami==pseudo_utilisateur: #verification que l'utilisateur n'a pas entré son propre pseudo
-                return HttpResponse('Le pseudo de votre ami doit être différent du vôtre !')            
-
-            try:
-                utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
-                ami=Utilisateur.objects.get(pseudo=pseudo_ami) #on verifie si ce pseudo existe dans la base de donnée                
-                nouvelle_conversation=Conversation() #on crée la conversation
-                nouvelle_conversation.save() 
-                nouvelle_conversation.participants.add(utilisateur,ami) #on ajoute l'ami et l'utilisateur à la conversation                       
-                return render(request, 'discussion/creation_conversation.html',{'utilisateur':utilisateur})
-            except Utilisateur.DoesNotExist:
-                return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur 
+            
+            utilisateur=get_object_or_404(Utilisateur,pseudo=pseudo_utilisateur)
+            ami=get_object_or_404(Utilisateur,pseudo=pseudo_ami) #verifie que l'ami existe effectivement
+            conversation=utilisateur.conversations.all().last() #appelle la dernière conversation créée
+            conversation.participants.add(ami) #ajoute l'ami à la conversation
+            
+            return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
         else:
-            return render(request, 'discussion/creation_conversation.html',locals())             
+            return render(request, 'discussion/creation_conversation.html',locals())  
     else:
-        form=ConversationCreationForm()
+        form=AjoutAmiForm()
         return HttpResponse("Erreur, veuillez recommencer svp")
 
 def quitter_conversation(request,pseudo_utilisateur,id_conversation):
@@ -76,30 +86,39 @@ def quitter_conversation(request,pseudo_utilisateur,id_conversation):
     conversation.participants.remove(utilisateur)
     if conversation.participants.count()<2: #s'il ne reste qu'une personne dans la conversation, celle-ci est supprimée
         conversation.delete()
-    return render(request, 'discussion/quitter_conversation.html',{'utilisateur':utilisateur})
+    conversations=utilisateur.conversations.all()
+    return HttpResponseRedirect(reverse('discussion.views.conversations',kwargs={'pseudo_utilisateur':pseudo_utilisateur}))
+    #return render(request, 'discussion/conversations.html',{'conversations':conversations,'utilisateur':utilisateur})
 
-def ajout_ami_conversation(request,pseudo_utilisateur,id_conversation):	
-    if request.method=='POST':        
-        form=ConversationCreationForm(request.POST)        
+def ajout_ami_conversation(request,pseudo_utilisateur,id_conversation):
+    
+    if request.method=='POST':  
+        
+        form=AjoutAmiForm(request.POST)
+        compte=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
+        conversations=compte.conversations.all()
         if form.is_valid():
             pseudo_ami=form.cleaned_data['pseudo_ami']
             if pseudo_ami==pseudo_utilisateur: #verification que l'utilisateur n'a pas entré son propre pseudo
-                return HttpResponse('Le pseudo de votre ami doit être différent du vôtre !')            
-            try:
-                utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
+                return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))            
+            else:
+                
                 ami=Utilisateur.objects.get(pseudo=pseudo_ami) #on verifie si ce pseudo existe dans la base de donnée                
                 conversation=Conversation.objects.get(id=id_conversation) #on récupère la conversation dans la base de donnée
                 if ami in conversation.participants.all():
-                    return HttpResponse('Cette personne appartient déjà à la conversation!')
+                    return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
                 else:
                     conversation.participants.add(ami) #on ajoute l'ami à la conversation                       
-                    return render(request, 'discussion/ajout_ami_conversation.html',{'utilisateur':utilisateur})
-            except Utilisateur.DoesNotExist:
-                return HttpResponse("""Ce pseudo n'existe pas!""")  # s'il n'existe pas -> message d'erreur 
+                    return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte])) 
         else:
-            return HttpResponse("Erreur, formulaire non valide")             
+            
+            
+            return render_to_response('discussion/conversations.html', { 'conversations':conversations,'form': form,'utilisateur':compte},context_instance=RequestContext(request))
     else:
-        form=ConversationCreationForm()
+        
+        form=AjoutAmiForm()
+        
+        return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
         return HttpResponse("Erreur, veuillez recommencer svp")
 
 def inscription(request):
@@ -126,7 +145,17 @@ def inscription(request):
         return render(request, 'discussion/inscription.html', locals())
 
 def conversation(request,pseudo_utilisateur, id_conversation):
+    utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)    
 
+    return render(request, 'discussion/conversation.html', locals())
+
+def affichageMessage(request, pseudo_utilisateur, id_conversation):
+    conversation_courante=Conversation.objects.get(id=id_conversation)    
+
+    utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
+    return render(request, 'discussion/affichageMessage.html', locals())
+
+def envoiMessage(request, pseudo_utilisateur, id_conversation):
     conversation_courante=Conversation.objects.get(id=id_conversation)    
 
     utilisateur=Utilisateur.objects.get(pseudo=pseudo_utilisateur)
@@ -138,7 +167,6 @@ def conversation(request,pseudo_utilisateur, id_conversation):
             
             # Ici nous pouvons traiter les données du formulaire
             texte = form.cleaned_data['texte']
-            #auteur = form.cleaned_data['auteur']
             message=Message(auteur = utilisateur ,texte = texte)            
             message.save()
 	    conversation_courante.messages.add(message)
@@ -146,10 +174,7 @@ def conversation(request,pseudo_utilisateur, id_conversation):
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         form = EnvoiMessage()  # Nous créons un formulaire vide
     	
-    
-    #messages = Message.objects.all()
-
-    return render(request, 'discussion/conversation.html', locals())
+    return render(request, 'discussion/envoiMessage.html', locals())
 
 def changement(request):
     if request.method == 'POST':  # S'il s'agit d'une requête POST
@@ -178,4 +203,8 @@ def changement(request):
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
         form = ChangementForm()  # Nous créons un formulaire vide
         return render(request, 'discussion/changement.html', locals())
+
+
+
+    	
 

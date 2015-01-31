@@ -1,13 +1,45 @@
+
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <title>Page de connexion</title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}css/inscription.css">
+</head>
+
 <h1>Page de connexion</h1>
+<body>
+    <form id="connexion" action="{% url "discussion.views.connexion" %}" method="post" class="niceform" novalidate>{% csrf_token %}
+       
 
-<form action="{% url "discussion.views.connexion" %}" method="post">
-   {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Connexion" />
-</form>
+{% csrf_token %}
+        <dl>
+            <dt>{{ form.identifiant.label_tag }} </dt>
+            <dd>{{ form.identifiant }}</dd>
+            <dd>{{ form.identifiant.errors }}</dd>
+        </dl>
+        <dl>
+            <dt>{{ form.mdp.label_tag }} </dt>
+            <dd>{{ form.mdp }}</dd>
+            <dd>{{ form.mdp.errors }}</dd>
+        </dl>
+       
+        
+        <div class="break">
+            <input type="submit" value="Connexion" />
+        </div>
+    </form>
+</body>
+</html>
 
-<p>Pas encore de compte??? Inscris toi!</p>
-<li><a href="/discussion/inscription">inscription</a></li>
+
+
+
+<p>Pas encore de compte?</p>  
+<input type="button" value="S'inscrire" onclick="javascript:location.href='/discussion/inscription'">
+
 
 <p>Mot de passe oublié?</p>
-<li><a href="/discussion/changement">changement</a></li>
+
+<input type="button" value="Changer mot de passe " onclick="javascript:location.href='/discussion/changement'">

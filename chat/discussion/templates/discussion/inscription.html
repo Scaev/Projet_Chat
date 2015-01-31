@@ -1,8 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <title>Page d'inscription</title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}css/inscription.css">
+</head>
+
 <h1>Page d'inscription</h1>
+<body>
+    <form id="inscription" action="{% url "discussion.views.inscription" %}" method="post" class="niceform" novalidate>{% csrf_token %}
+       
 
-<form action="{% url "discussion.views.inscription" %}" method="post">
-   {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="S'inscrire!" />
-</form>
-
+{% csrf_token %}
+        <dl>
+            <dt>{{ form.pseudo.label_tag }} </dt>
+            <dd>{{ form.pseudo }}</dd>
+            <dd>{{ form.pseudo.errors }}</dd>
+        </dl>
+        <dl>
+            <dt>{{ form.telephone.label_tag }} </dt>
+            <dd>{{ form.telephone }}</dd>
+            <dd>{{ form.telephone.errors }}</dd>
+        </dl>
+        <dl>
+            <dt>{{ form.email.label_tag }} </dt>
+            <dd>{{ form.email }}</dd>
+            <dd>{{ form.email.errors }}</dd>
+        </dl>
+        <dl>
+            <dt>{{ form.mdp.label_tag }} </dt>
+            <dd>{{ form.mdp }}</dd>
+            <dd>{{ form.mdp.errors }}</dd>
+        </dl>
+        
+        <div class="break">
+            <input type="submit" value="S'inscrire!" />
+        </div>
+    </form>
+</body>
+</html>
