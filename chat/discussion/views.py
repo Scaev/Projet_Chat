@@ -154,6 +154,17 @@ def conversation(request,pseudo_utilisateur, id_conversation):
             
             # Ici nous pouvons traiter les données du formulaire
             texte = form.cleaned_data['texte']
+            
+            texte = texte.replace('le caca', 'la cerise') 
+            texte = texte.replace('debile', 'gentil')
+            texte = texte.replace('con', 'simple')
+            
+            texte = texte.replace('cretin', 'chenapan')
+            texte = texte.replace('une merde', 'un voyou')
+            texte = texte.replace('merde', 'zut')
+            
+            texte = texte.replace('putain', 'flute')
+ 
             message=Message(auteur = utilisateur ,texte = texte)            
             message.save()
 	    conversation_courante.messages.add(message)
