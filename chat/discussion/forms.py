@@ -1,6 +1,7 @@
 # coding: utf-8
 from django import forms
 from models import Utilisateur,Conversation,Message
+import hashlib
 
 def est_vide(parametre):
     length=len(parametre)
@@ -97,6 +98,21 @@ class ConnexionForm(forms.Form):
         est_vide(mdp)
         
         return mdp
+    def clean(self):
+        cleaned_data = super(ConnexionForm, self).clean()
+        mdp= cleaned_data.get('mdp')
+        identifiant=cleaned_data.get('identifiant')
+        if mdp and identifiant:
+            for utilisateur in Utilisateur.objects.all():
+                if identifiant==utilisateur.pseudo or identifiant==utilisateur.telephone or identifiant==utilisateur.email:
+                    compte=utilisateur
+            mdp_hash = hashlib.md5()
+            mdp_hash.update(mdp)
+            if compte.mot_de_passe!=mdp_hash.hexdigest():
+                self.add_error('mdp', "Le mot de passe est erroné")
+
+        return cleaned_data
+            
 
 
 
