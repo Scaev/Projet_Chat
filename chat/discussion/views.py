@@ -70,9 +70,9 @@ def ajout_ami_creation_conversation(request,pseudo_utilisateur):
             conversation=utilisateur.conversations.all().last() #appelle la dernière conversation créée
             conversation.participants.add(ami) #ajoute l'ami à la conversation
             
-            return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
+            return HttpResponseRedirect(reverse('discussion.views.creation_conversation',kwargs={'pseudo_utilisateur':pseudo_utilisateur}))
         else:
-            return render(request, 'discussion/creation_conversation.html',locals())  
+            return HttpResponseRedirect(reverse('discussion.views.creation_conversation',kwargs={'pseudo_utilisateur':pseudo_utilisateur}))  
     else:
         form=AjoutAmiForm()
         return HttpResponse("Erreur, veuillez recommencer svp")
