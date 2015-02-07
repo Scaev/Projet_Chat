@@ -1,7 +1,12 @@
+
+<title> Conversation {{id_conversation}} </title>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" />
+
 <iframe src="{{id_conversation}}/affichageMessage" width="920" height="870"> </iframe>
 
 <iframe src="{{id_conversation}}/envoiMessage" width="920" height="870"> </iframe>
 
 
+<a href="{% url "discussion.views.conversations" utilisateur.pseudo %}"> Revenir aux conversations</a>
 
 
