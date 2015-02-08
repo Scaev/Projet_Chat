@@ -1,5 +1,13 @@
 <meta http-equiv="refresh" content="2">
 
+<<<<<<< HEAD
+=======
+
+{% extends "base.html" %}
+
+{% block title %} Conversation {{id_conversation}} {% endblock %}
+
+>>>>>>> 0528fa1b86ac8b02cf970006bc74333a21fa5aaa
 {% block content %}
 {% for message in conversation_courante.messages.all %}
 

@@ -70,9 +70,9 @@ def ajout_ami_creation_conversation(request,pseudo_utilisateur):
             conversation=utilisateur.conversations.all().last() #appelle la dernière conversation créée
             conversation.participants.add(ami) #ajoute l'ami à la conversation
             
-            return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
+            return HttpResponseRedirect(reverse('discussion.views.creation_conversation',kwargs={'pseudo_utilisateur':pseudo_utilisateur}))
         else:
-            return render(request, 'discussion/creation_conversation.html',locals())  
+            return HttpResponseRedirect(reverse('discussion.views.creation_conversation',kwargs={'pseudo_utilisateur':pseudo_utilisateur}))  
     else:
         form=AjoutAmiForm()
         return HttpResponse("Erreur, veuillez recommencer svp")
@@ -98,19 +98,16 @@ def ajout_ami_conversation(request,pseudo_utilisateur,id_conversation):
             pseudo_ami=form.cleaned_data['pseudo_ami']
             if pseudo_ami==pseudo_utilisateur: #verification que l'utilisateur n'a pas entré son propre pseudo
                 return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))            
-            else:
-                
-                ami=Utilisateur.objects.get(pseudo=pseudo_ami) #on verifie si ce pseudo existe dans la base de donnée                
+            else:                
+                ami=get_object_or_404(Utilisateur,pseudo=pseudo_ami) #on verifie si le pseudo de l'ami existe              
                 conversation=Conversation.objects.get(id=id_conversation) #on récupère la conversation dans la base de donnée
-                if ami in conversation.participants.all():
+                if ami in conversation.participants.all(): #on vérifie que l'ami ne soit pas deja dans la conversation
                     return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
                 else:
                     conversation.participants.add(ami) #on ajoute l'ami à la conversation                       
                     return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte])) 
-        else:
-            
-            
-            return render_to_response('discussion/conversations.html', { 'conversations':conversations,'form': form,'utilisateur':compte},context_instance=RequestContext(request))
+        else:           
+            return HttpResponseRedirect(reverse('discussion.views.conversations',args=[compte]))
     else:
         
         form=AjoutAmiForm()

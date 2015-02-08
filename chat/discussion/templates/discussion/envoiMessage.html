@@ -1,3 +1,5 @@
+<b> {{utilisateur.pseudo}} : </b>
+
 <form id="submit_message" action="{% url "discussion.views.envoiMessage" utilisateur.pseudo conversation_courante.id %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
