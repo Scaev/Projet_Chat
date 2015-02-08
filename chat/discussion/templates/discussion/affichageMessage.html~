@@ -1,14 +1,14 @@
 <meta http-equiv="refresh" content="2">
-
-<<<<<<< HEAD
-=======
+<!-- Template appelé lorsque que l'on est sur une page de conversation. Affiche les pseudos des utilisateurs participants à la conversation, et les messages, leur auteur et leur date d'envoi. -->
 
 {% extends "base.html" %}
 
-{% block title %} Conversation {{id_conversation}} {% endblock %}
-
->>>>>>> 0528fa1b86ac8b02cf970006bc74333a21fa5aaa
 {% block content %}
+
+
+<h1> Conversation {{id_conversation}}  -  Participants: {% for utilisateur in conversation_courante.participants.all %} {{utilisateur.pseudo}} {% endfor %}</h1>
+
+
 {% for message in conversation_courante.messages.all %}
 
 <i>{{message.date}}</i> <b>{{message.auteur}} </b> : {{message.texte}} <br>

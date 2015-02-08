@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Changement de mot de passe %}
+{% block title %} Changement de mot de passe {% endblock %}
 
 {% block content %}
 

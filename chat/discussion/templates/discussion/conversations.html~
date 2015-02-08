@@ -3,9 +3,10 @@
 {% block title %} Discussions en cours {% endblock %}
 
 
-<h1> Discussions en cours </h1>
+
 
 {% block content %}
+<h1> Discussions en cours </h1>
 <a href="{% url "discussion.views.creation_nouvelle_conversation" utilisateur.pseudo %}" onclick="window.open(this.href); return false;"> Créer une nouvelle conversation </a>
 
 

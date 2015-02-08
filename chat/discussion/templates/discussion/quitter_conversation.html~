@@ -1,4 +1,4 @@
-<p>Vous avez quitter cette conversation avec succès!</p>
+<p>Vous avez quitté cette conversation avec succès!</p>
 
 <a href="{% url "discussion.views.conversations" utilisateur.pseudo %}"> Revenir aux conversations</a>
 

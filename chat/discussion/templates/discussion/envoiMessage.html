@@ -1,3 +1,4 @@
+<!-- Appelle le formulaire qui permet de rajouter un message dans une conversation. Cette page n'est rafraichie que lors de l'envoi d'un message par l'utilisateur. -->
 <b> {{utilisateur.pseudo}} : </b>
 
 <form id="submit_message" action="{% url "discussion.views.envoiMessage" utilisateur.pseudo conversation_courante.id %}" method="post">
