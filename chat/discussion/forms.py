@@ -138,7 +138,7 @@ class ChangementForm(forms.Form):
     
     pseudo=forms.CharField(min_length=1,max_length=20,required=False)
     telephone=forms.CharField(required=False)
-    email=forms.EmailField(label="Votre adresse mail",required=False)
+    email=forms.CharField(label="Votre adresse mail",required=False)
     mdp = forms.CharField(widget=forms.PasswordInput,min_length=1,label="Nouveau mot de passe",required=False)
     
       
