@@ -6,7 +6,6 @@ from models import Utilisateur,Conversation,Message
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist
 import hashlib
 
 # render_to_response est utilisé pour l'affichage des erreurs dans les formulaires.

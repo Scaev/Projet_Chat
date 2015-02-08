@@ -107,6 +107,7 @@ class ConnexionForm(forms.Form):
                 if identifiant==utilisateur.pseudo or identifiant==utilisateur.telephone or identifiant==utilisateur.email:
                     compte=utilisateur
             mdp_hash = hashlib.md5()
+	    mdp = "cHa473s" + mdp + "40b1";
             mdp_hash.update(mdp)
             if compte.mot_de_passe!=mdp_hash.hexdigest():
                 self.add_error('mdp', "Le mot de passe est erroné")

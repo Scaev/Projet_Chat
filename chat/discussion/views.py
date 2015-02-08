@@ -127,6 +127,7 @@ def inscription(request):
             telephone=form.cleaned_data['telephone']
             email=form.cleaned_data['email']
 	    mot_de_passe_hash = hashlib.md5()
+	    mot_de_passe = "cHa473s" + mot_de_passe + "40b1";
 	    mot_de_passe_hash.update(mot_de_passe)
             user=Utilisateur(pseudo=pseudo,mot_de_passe=mot_de_passe_hash.hexdigest(),telephone=telephone,email=email)
             user.save()
