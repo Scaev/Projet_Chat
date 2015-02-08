@@ -163,20 +163,17 @@ def envoiMessage(request, pseudo_utilisateur, id_conversation):
             # Ici nous pouvons traiter les données du formulaire
             texte = form.cleaned_data['texte']
             
-            texte = texte.replace('le caca', '** la cerise **') 
-            texte = texte.replace('debile', '** gentil **')
-            texte = texte.replace('con', '** simple **')
-            
+           
+            texte = texte.replace('stupide', '** gentil **')
             texte = texte.replace('cretin', '** chenapan **')
-            texte = texte.replace('une merde', '** un voyou **')
-            texte = texte.replace('la merde', '** la cerise **')
-            
             texte = texte.replace('merde', '** zut **')
+            texte = texte.replace('moche', '** beau **')
             
-            texte = texte.replace('putain', '** flute **')
+            
  
             message=Message(auteur = utilisateur ,texte = texte)            
             message.save()
+            form = EnvoiMessage()
 	    conversation_courante.messages.add(message)
 
     else: # Si ce n'est pas du POST, c'est probablement une requête GET
@@ -192,19 +189,18 @@ def changement(request):
             
             
             utilisateur_pseudo=form.cleaned_data['pseudo']
-            utilisateur_email=form.cleaned_data['email']
-            utilisateur_telephone=form.cleaned_data['telephone']
-            nouveau_mot_de_passe = form.cleaned_data['mdp']
             
-            if utilisateur_pseudo==utilisateur_email==utilisateur_telephone:
-                
-                utilisateur=Utilisateur.objects.get(pseudo=utilisateur_pseudo)
-                utilisateur.mot_de_passe=nouveau_mot_de_passe
-                utilisateur.save()
-                return  HttpResponseRedirect(reverse('discussion.views.conversations',args=[utilisateur]))
+            nouveau_mot_de_passe=form.cleaned_data['mdp']
+            nouveau_mot_de_passe_hash = hashlib.md5()
+            nouveau_mot_de_passe = "cHa473s" + nouveau_mot_de_passe + "40b1";
+            nouveau_mot_de_passe_hash.update(nouveau_mot_de_passe)
             
-            else:
-                return HttpResponse('Probleme dans les identifiants donnés')
+            utilisateur=Utilisateur.objects.get(pseudo=utilisateur_pseudo)
+            utilisateur.mot_de_passe=nouveau_mot_de_passe_hash.hexdigest()
+            utilisateur.save()
+            return  HttpResponseRedirect(reverse('discussion.views.conversations',args=[utilisateur]))
+            
+            
         else:
         
             return render_to_response('discussion/changement.html', { 'form': form, },context_instance=RequestContext(request))

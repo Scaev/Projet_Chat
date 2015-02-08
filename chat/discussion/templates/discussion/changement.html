@@ -3,16 +3,44 @@
 {% extends "base.html" %}
 
 {% block title %} Changement de mot de passe {% endblock %}
+{% block css %} <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}css/inscription.css"> {% endblock %}
+
 
 {% block content %}
 
 <h1>Changement de mot de passe</h1>
 <P> Nous devons verifier votre identité, veuillez inserez votre mot de passe, pseudo et adresse mail pour changer de mot de passe </P>
-<form action="{% url "discussion.views.changement" %}" method="post">
-   {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Modifier mot de passe" />
-</form>
+
+<form id="connexion" action="{% url "discussion.views.changement" %}" method="post" class="niceform" novalidate>{% csrf_token %}
+    
+    
+    {% csrf_token %}
+    <dl>
+        <dt>{{ form.pseudo.label_tag }} </dt>
+        <dd>{{ form.pseudo }}</dd>
+        <dd>{{ form.pseudo.errors }}</dd>
+    </dl>
+    <dl>
+        <dt>{{ form.telephone.label_tag }} </dt>
+        <dd>{{ form.telephone }}</dd>
+        <dd>{{ form.telephone.errors }}</dd>
+    </dl>
+    <dl>
+        <dt>{{ form.email.label_tag }} </dt>
+        <dd>{{ form.email }}</dd>
+        <dd>{{ form.pseudo.errors }}</dd>
+    </dl>
+    <dl>
+        <dt>{{ form.mdp.label_tag }} </dt>
+        <dd>{{ form.mdp }}</dd>
+        <dd>{{ form.mdp.errors }}</dd>
+    </dl>
+    
+    
+    <div class="break">
+        <input type="submit" value="Changer le mot de passe" />
+    </div>
+
 
 {% endblock %}
 

@@ -21,3 +21,9 @@ class Conversation(models.Model):
     participants = models.ManyToManyField(Utilisateur,related_name="conversations")
     messages = models.ManyToManyField(Message)
 
+
+
+
+
+
+

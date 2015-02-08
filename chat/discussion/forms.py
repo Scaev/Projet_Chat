@@ -13,7 +13,7 @@ class InscriptionForm(forms.Form):
     pseudo=forms.CharField(min_length=1,max_length=20,required=False)
     telephone=forms.CharField(required=False)
     email=forms.EmailField(label="Mail",required=False)
-    mdp = forms.CharField(widget=forms.PasswordInput,min_length=1,label="mot de passe",required=False)
+    mdp = forms.CharField(widget=forms.PasswordInput,min_length=1,label="Mot de passe",required=False)
     
 
 #Tout ce qui est en dessous permet de verifier qu'on envoit de bonnes données lorsqu'on s'inscrit et permet aussi d'envoyer de beaux messages d'erreurs.
@@ -141,61 +141,54 @@ class ChangementForm(forms.Form):
     email=forms.EmailField(label="Votre adresse mail",required=False)
     mdp = forms.CharField(widget=forms.PasswordInput,min_length=1,label="Nouveau mot de passe",required=False)
     
-    def clean_telephone(self):
-        telephone = self.cleaned_data['telephone']
-        est_vide(telephone)
-        length = len(telephone)
-        if length!=10:
-            raise forms.ValidationError("Un numéro de telephone comporte 10 chiffres")
+      
+
+    def clean(self):
+        cleaned_data = super(ChangementForm, self).clean()
+        email= cleaned_data.get('email')
+        pseudo=cleaned_data.get('pseudo')
+        telephone=cleaned_data.get('telephone')
+        mdp=cleaned_data.get('mdp')
+        valide=True
+        if len(email)==0:
+            self.add_error('email', "Ce champs est obligatoire")
+            valide=False
+        if len(pseudo)==0:
+            self.add_error('pseudo', "Ce champs est obligatoire")
+            valide=False
+        if len(telephone)==0:
+            self.add_error('telephone', "Ce champs est obligatoire")
+            valide=False
+        if len(mdp)==0:
+            self.add_error('mdp', "Ce champs est obligatoire")
+            valide=False
+        if valide:    
+            try:
+                utilisateur_pseudo=Utilisateur.objects.get(pseudo=pseudo).pseudo
+            except Utilisateur.DoesNotExist:
+                self.add_error('pseudo', "Pseudo non existant")
+                valide=False
+       
+            try:
+                utilisateur_email=Utilisateur.objects.get(email=email).pseudo
+            except Utilisateur.DoesNotExist:
+                self.add_error('email', "Adresse non présente dans la base")
+                valide=False
         
-        try:
-            premier_chiffre=telephone[0]
-            verif_telephone=telephone[1:length]
-            verif_telephone=int(verif_telephone)
-            premier_chiffre=int(premier_chiffre)
+            try:  
+                utilisateur_telephone=Utilisateur.objects.get(telephone=telephone).pseudo
+            except Utilisateur.DoesNotExist:
+                self.add_error('telephone', "Telephone non présent dans la base")
+                valide=False
+        
             
-        except ValueError:
-             raise forms.ValidationError("Un numéro de telephone est un numero")
-        if premier_chiffre!=0:
-            message=str(premier_chiffre)
-            raise forms.ValidationError("Un numéro de telephone commence par un 0 il me semble... ",message)
-        
-        try:
-            utilisateur_telephone=Utilisateur.objects.get(telephone=telephone)
-            return utilisateur_telephone
-        except Utilisateur.DoesNotExist:
-            raise forms.ValidationError("Ce numéro n'est pas présent dans la base de donnée")
-            
-            
-    
-    def clean_pseudo(self):
-        pseudo=self.cleaned_data['pseudo']
-        longueur=len(pseudo)
-        est_vide(pseudo)
-        
-        if longueur>10:
-            raise forms.ValidationError("Pas plus de 10 caractères pour un pseudo")
-        try:
-            utilisateur_pseudo=Utilisateur.objects.get(pseudo=pseudo)
-            return utilisateur_pseudo
-        except Utilisateur.DoesNotExist:
-            raise forms.ValidationError("Ce pseudo n'est pas présent dans la base de donnée")
-        
-    
-    def clean_mdp(self):
-        mdp= self.cleaned_data['mdp']
-        length=len(mdp)
-        est_vide(mdp)
-        return mdp
-    
-    def clean_email(self):
-        email=self.cleaned_data['email']
-        est_vide(email)
-        try:
-            utilisateur_email=Utilisateur.objects.get(email=email)
-            return utilisateur_email
-        except Utilisateur.DoesNotExist:
-            raise forms.ValidationError("Cette adresse n'est pas présente dans la base de donnée")
+        if valide:
+            if utilisateur_pseudo== utilisateur_telephone and utilisateur_pseudo==utilisateur_email:
+                pass
+            else:
+                self.add_error('pseudo', "Vos données ne concordent pas")
+        return cleaned_data
+
 
 class EnvoiMessage(forms.Form):
     texte=forms.CharField(max_length=500,widget=forms.Textarea, label="")
