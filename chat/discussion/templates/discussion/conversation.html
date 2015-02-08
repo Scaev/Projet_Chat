@@ -10,6 +10,10 @@
 <iframe src="{{id_conversation}}/envoiMessage" width="50%" height="35%" align = "center"> </iframe>
 
 
-<a href="{% url "discussion.views.conversations" utilisateur.pseudo %}"> Revenir aux conversations</a>
+
+<form class="centre" action="{% url "discussion.views.conversations" utilisateur.pseudo %}" method="post">
+			   {% csrf_token %}
+			    <input type="submit" value="Revenir aux conversations" />
+			</form>
 
 
