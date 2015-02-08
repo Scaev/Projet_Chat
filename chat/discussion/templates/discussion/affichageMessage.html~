@@ -1,13 +1,6 @@
-<meta http-equiv="refresh" content="30">
+<meta http-equiv="refresh" content="2">
 
-
-{% extends "base.html" %}
 {% block content %}
-
-
-<h1> Conversation {{id_conversation}}  -  Participants: {% for utilisateur in conversation_courante.participants.all %} {{utilisateur.pseudo}} {% endfor %}</h1>
-
-
 {% for message in conversation_courante.messages.all %}
 
 <i>{{message.date}}</i> <b>{{message.auteur}} </b> : {{message.texte}} <br>
